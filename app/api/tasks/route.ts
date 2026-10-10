@@ -57,3 +57,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to create task" }, { status: 500 });
   }
 }
+
+export async function PATCH(request: Request) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
+    const userId = claimsData?.claims?.sub;
+    if (claimsError || !userId) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
+    const body: unknown = await request.json();
+    if (!body || typeof body !== "object" || !("id" in body) || typeof body.id !== "string" || !("done" in body) || typeof body.done !== "boolean") {
+      return NextResponse.json({ error: "Task id and completion state are required" }, { status: 400 });
+    }
+    const membership = await currentWorkspace(supabase, userId);
+    if (!membership) return NextResponse.json({ error: "Workspace not found" }, { status: 409 });
+    const done = body.done;
+    const { data, error } = await supabase.from("tasks").update({
+      status: done ? "done" : "todo",
+      completed_at: done ? new Date().toISOString() : null,
+    }).eq("id", body.id).eq("workspace_id", membership.workspace_id)
+      .select("id,status,completed_at").maybeSingle();
+    if (error) throw error;
+    if (!data) return NextResponse.json({ error: "Task not found" }, { status: 404 });
+    return NextResponse.json({ task: data });
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to update task" }, { status: 500 });
+  }
+}
+
