@@ -32,7 +32,7 @@ export default function LoginPage() {
     <section className="login-brand-panel">
       <div className="login-brand"><span className="login-mark">w.</span> wedos</div>
       <div className="login-brand-copy">
-        <div className="login-eyebrow">THE PLANNER'S WORKSPACE</div>
+        <div className="login-eyebrow">THE PLANNER&apos;S WORKSPACE</div>
         <h1>Make room<br/>for the magic.</h1>
         <p>Every celebration has a thousand moving parts. Keep the people, plans, budgets and creative details moving together.</p>
         <div className="login-features"><span>✓ Wedding operations</span><span>✓ Vendor coordination</span><span>✓ Design approvals</span></div>
@@ -43,7 +43,7 @@ export default function LoginPage() {
       <div className="login-shield"><ShieldCheck size={22}/></div>
       <div className="login-form-eyebrow">WELCOME TO WEDOS</div>
       <h2>Sign in to your studio</h2>
-      <p className="login-intro">Enter your work email. We'll send you a secure sign-in link—no password to remember.</p>
+      <p className="login-intro">Enter your work email. We&apos;ll send you a secure sign-in link—no password to remember.</p>
       <form onSubmit={submit}>
         <label htmlFor="email">Work email</label>
         <div className="login-input-wrap"><Mail size={17}/><input id="email" type="email" required autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@yourstudio.com"/></div>
