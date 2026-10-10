@@ -52,7 +52,7 @@ This is the initial implementation foundation, not yet a production-ready multi-
 
 1. Configure Supabase URL and publishable key in `.env.local`.
 2. Enable email sign-in and configure the redirect allow-list to include your local and deployed `/auth/callback` URL.
-3. Apply migrations in order: `0001_core_schema.sql`, then `0002_workspace_onboarding.sql`.
+3. Apply migrations in order: `0001_core_schema.sql`, `0002_workspace_onboarding.sql`, then `0003_security_hardening.sql`.
 4. Open `/login`, request a magic link, and create the first workspace via `POST /api/workspace` with `{ "name": "Your Studio" }` after sign-in.
 5. The task API at `/api/tasks` supports authenticated listing, creation, and completion updates. The dashboard reads live tasks when the backend is configured and reachable.
 
