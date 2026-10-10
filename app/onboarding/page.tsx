@@ -33,7 +33,7 @@ export default function OnboardingPage() {
 
   return <main className="onboarding-shell"><div className="onboarding-card">
     <div className="onboarding-icon"><Building2 size={24}/></div>
-    <div className="login-form-eyebrow">LET'S SET UP YOUR STUDIO</div>
+    <div className="login-form-eyebrow">LET&apos;S SET UP YOUR STUDIO</div>
     <h1>Create your workspace</h1>
     <p>Start with your planning studio name. You can invite your team and organise weddings next.</p>
     <form onSubmit={submit}><label htmlFor="studio-name">Studio or company name</label><input id="studio-name" required minLength={2} maxLength={80} value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. Atelier Celebrations"/><button disabled={busy||done} type="submit">{busy?"Creating workspace…":done?"Workspace created":<>Create workspace <ArrowRight size={16}/></>}</button></form>
