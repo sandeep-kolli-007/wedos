@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { ArrowRight, Building2, CheckCircle2 } from "lucide-react";
 
 export default function OnboardingPage() {
@@ -8,6 +8,12 @@ export default function OnboardingPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/workspace", { cache: "no-store" }).then(async response => response.ok ? response.json() : null).then(payload => {
+      if (payload?.membership) window.location.replace("/");
+    }).catch(() => undefined);
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
