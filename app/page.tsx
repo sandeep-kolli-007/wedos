@@ -68,10 +68,30 @@ export default function Home() {
   const doneCount = useMemo(() => tasks.filter(t => t.done).length, [tasks]);
   const filteredTasks = tasks.filter(t => (t.title + t.meta).toLowerCase().includes(query.toLowerCase()));
   function notify(message: string) { setToast(message); window.setTimeout(() => setToast(""), 2600); }
-  function addTask() {
+  async function addTask() {
     if (!newTitle.trim()) return;
-    setTasks(prev => [{ id: Date.now(), title: newTitle.trim(), meta: "General · Planning", priority: "Normal", done: false }, ...prev]);
-    setNewTitle(""); setShowNew(false); notify("Task added to your workspace");
+    const title = newTitle.trim();
+    try {
+      const response = await fetch("/api/tasks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title, priority: "normal" }) });
+      const payload = await response.json().catch(() => ({}));
+      if (response.status === 409) { notify(payload.error || "Create a workspace before adding tasks"); return; }
+      if (response.ok && payload.task) {
+        const task = payload.task;
+        setTasks(prev => [{ id: task.id, title: task.title, meta: task.due_at ? "Due " + new Date(task.due_at).toLocaleDateString("en-IN") : "Workspace · Planning", priority: "Normal", done: task.status === "done" }, ...prev]);
+        setLiveTasks(true); setNewTitle(""); setShowNew(false); notify("Task saved to your workspace"); return;
+      }
+    } catch { /* Keep dashboard preview usable without a backend connection. */ }
+    setTasks(prev => [{ id: Date.now(), title, meta: "Demo · Planning", priority: "Normal", done: false }, ...prev]);
+    setNewTitle(""); setShowNew(false); notify("Task added to dashboard preview");
+  }
+  async function toggleTask(task: Task) {
+    const nextDone = !task.done;
+    setTasks(prev => prev.map(item => item.id === task.id ? { ...item, done: nextDone } : item));
+    if (typeof task.id !== "string") return;
+    try {
+      const response = await fetch("/api/tasks", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: task.id, done: nextDone }) });
+      if (!response.ok) notify("Could not sync task change; refresh and try again");
+    } catch { notify("Task change is local only while offline"); }
   }
   return <div className="app-shell">
     <aside className="sidebar">
@@ -84,7 +104,7 @@ export default function Home() {
     <main className="main">
       <header className="topbar"><div className="crumb">Workspace <span style={{padding:"0 8px",color:"#c5c8c2"}}>/</span><b>{activeNav}</b></div><div className="top-actions"><label className="searchbox"><Search size={15}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search anything..." aria-label="Search tasks"/></label><button className="icon-btn" aria-label="Notifications" onClick={()=>notify("You're all caught up on notifications")}><Bell/><span className="notification-dot"/></button><button className="icon-btn" aria-label="Help" onClick={()=>notify("WedOS help centre coming soon")}><Compass/></button><div className="user-mini" title="Atelier Studio">AS</div></div></header>
       <section className="page-head"><div><div className="eyebrow">MONDAY, 10 OCTOBER 2026</div><h1>Your celebrations, in motion.</h1><p>A clear view of the work behind every unforgettable moment.</p></div><div className="head-actions"><button className="btn" onClick={()=>notify("Export report is being prepared")}><ArrowDownRight/> Export report</button><button className="btn primary" onClick={()=>setShowNew(true)}><Plus/> New task</button></div></section>
-      <section className="welcome-strip"><div className="welcome-copy"><div className="eyebrow">YOUR STUDIO AT A GLANCE</div><h2>Good afternoon, Atelier team.</h2><p>Three celebrations are moving this week. Here’s what needs your eye.</p></div><div className="welcome-date"><strong>October 2026</strong>8 active weddings · 3 this week</div></section>
+      <section className="welcome-strip"><div className="welcome-copy"><div className="eyebrow">YOUR STUDIO AT A GLANCE</div><h2>Good afternoon, Atelier team.</h2><p>Three celebrations are moving this week. Here’s what needs your eye.</p></div><div className="welcome-date"><strong>October 2026</strong>{liveTasks ? "Live workspace tasks" : "Preview data · Connect Supabase to sync"}</div></section>
       <section className="metric-grid">
         <div className="metric-card"><div className="metric-top"><span className="metric-label">Active weddings</span><span className="metric-icon tone-green"><Heart/></span></div><div className="metric-value">08</div><div className="metric-foot"><span className="trend"><ArrowUpRight size={12} style={{display:"inline",verticalAlign:"middle"}}/> 2 new</span> <span>this month</span></div></div>
         <div className="metric-card"><div className="metric-top"><span className="metric-label">Budget under management</span><span className="metric-icon tone-orange"><CircleDollarSign/></span></div><div className="metric-value">₹1.84 Cr</div><div className="metric-foot"><span className="trend">68%</span><span>committed across weddings</span></div></div>
@@ -96,7 +116,7 @@ export default function Home() {
         <article className="panel"><div className="panel-head"><div><h3 className="panel-title">Coming up</h3><div className="panel-sub">Your team's next key moments</div></div><button className="section-link" onClick={()=>{setActiveNav("Timeline");notify("Opening the full timeline")}}>Full timeline <ArrowRight/></button></div><div className="event-list">{events.map(e=><div className="event-row" key={e.day}><div className="event-date"><b>{e.day}</b><span>{e.month}</span></div><div className="event-info"><strong>{e.title}</strong><span>{e.meta}</span></div><span className={`event-status ${e.status==="Needs review"?"review":e.status==="In progress"?"draft":""}`}>{e.status}</span></div>)}</div></article>
       </section>
       <section className="lower-grid">
-        <article className="panel"><div className="panel-head"><div><h3 className="panel-title">Priority tasks</h3><div className="panel-sub">{tasks.filter(t=>!t.done).length} items still need attention · Sorted by priority</div></div><button className="section-link" onClick={()=>notify("Showing all tasks")}>View all <ArrowRight/></button></div><div className="task-list">{filteredTasks.map(t=><label className="task-row" key={t.id}><input className="task-check" type="checkbox" checked={t.done} onChange={()=>setTasks(prev=>prev.map(x=>x.id===t.id?{...x,done:!x.done}:x))}/><span className={`task-text ${t.done?"done":""}`}><strong>{t.title}</strong><small>{t.meta}</small></span><span className={`task-priority ${t.priority==="Low"?"low":""}`}>{t.priority}</span></label>)}{filteredTasks.length===0&&<p style={{fontSize:12,color:"#888",padding:"20px 0"}}>No matching tasks found.</p>}</div></article>
+        <article className="panel"><div className="panel-head"><div><h3 className="panel-title">Priority tasks</h3><div className="panel-sub">{tasks.filter(t=>!t.done).length} items still need attention · Sorted by priority</div></div><button className="section-link" onClick={()=>notify("Showing all tasks")}>View all <ArrowRight/></button></div><div className="task-list">{filteredTasks.map(t=><label className="task-row" key={t.id}><input className="task-check" type="checkbox" checked={t.done} onChange={()=>void toggleTask(t)}/><span className={`task-text ${t.done?"done":""}`}><strong>{t.title}</strong><small>{t.meta}</small></span><span className={`task-priority ${t.priority==="Low"?"low":""}`}>{t.priority}</span></label>)}{filteredTasks.length===0&&<p style={{fontSize:12,color:"#888",padding:"20px 0"}}>No matching tasks found.</p>}</div></article>
         <article className="panel"><div className="panel-head"><div><h3 className="panel-title">Vendor pulse</h3><div className="panel-sub">Recent activity across your celebrations</div></div><button className="section-link" onClick={()=>{setActiveNav("Vendors");notify("Opening vendor directory")}}>Directory <ArrowRight/></button></div><div className="vendor-list">{vendors.map(v=><div className="vendor-row" key={v.name}><div className="vendor-avatar" style={{background:v.bg,color:v.color}}>{v.initials}</div><div className="vendor-meta"><strong>{v.name}</strong><small>{v.type}</small></div><div className="vendor-amount">{v.amount}<small>{v.status}</small></div></div>)}</div></article>
       </section>
       <nav className="mobile-menu">{[{label:"Home",icon:LayoutDashboard},{label:"Weddings",icon:Heart},{label:"Timeline",icon:CalendarDays},{label:"Vendors",icon:Users},{label:"More",icon:Menu}].map(item=>{const Icon=item.icon;return <button key={item.label} className={activeNav===(item.label==="Home"?"Overview":item.label)?"active":""} onClick={()=>{setActiveNav(item.label==="Home"?"Overview":item.label);if(item.label!=="Home")notify(item.label+" view selected")}}><Icon/><span>{item.label}</span></button>})}</nav>
