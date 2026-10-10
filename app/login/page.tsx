@@ -17,7 +17,7 @@ export default function LoginPage() {
       const supabase = createSupabaseBrowserClient();
       const { error: authError } = await supabase.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: window.location.origin + "/auth/callback?next=/" },
+        options: { emailRedirectTo: window.location.origin + "/auth/callback?next=/onboarding" },
       });
       if (authError) throw authError;
       setMessage("Magic link sent. Check your inbox to securely sign in.");
