@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, CalendarDays, MapPin, Plus, Search, Users, WalletCards, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, MapPin, Plus, Search, Users, X } from "lucide-react";
 
 type Wedding = {
   id: string; title: string; couple_names: string | null; status: string;
