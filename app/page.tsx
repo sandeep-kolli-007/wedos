@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowDownRight, ArrowRight, ArrowUpRight, Bell, CalendarDays, Check, ChevronDown, CircleDollarSign, ClipboardCheck, Clock3, Compass, FileText, Heart, LayoutDashboard, Menu, MessageCircle, Plus, Search, Settings2, Sparkles, Users, WalletCards, X } from "lucide-react";
 
-type Task = { id: number; title: string; meta: string; priority: "High" | "Normal" | "Low"; done: boolean };
+type Task = { id: number | string; title: string; meta: string; priority: "High" | "Normal" | "Low" | "Urgent"; done: boolean };
 const initialTasks: Task[] = [
   { id: 1, title: "Approve floral moodboard", meta: "Mehra Wedding · Design", priority: "High", done: false },
   { id: 2, title: "Confirm artist call time", meta: "Rao Wedding · Production", priority: "High", done: false },
@@ -50,6 +50,21 @@ export default function Home() {
   const [toast, setToast] = useState("");
   const [showNew, setShowNew] = useState(false);
   const [newTitle, setNewTitle] = useState("");
+  const [liveTasks, setLiveTasks] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/tasks", { cache: "no-store" }).then(async response => response.ok ? response.json() : null).then(payload => {
+      if (cancelled || !payload || !Array.isArray(payload.tasks)) return;
+      const mapped = payload.tasks.map((task: { id: string; title: string; status: string; priority: string; due_at?: string | null }) => ({
+        id: task.id, title: task.title,
+        meta: task.due_at ? "Due " + new Date(task.due_at).toLocaleDateString("en-IN") : "Workspace · Planning",
+        priority: (task.priority.charAt(0).toUpperCase() + task.priority.slice(1)) as Task["priority"],
+        done: task.status === "done",
+      }));
+      setTasks(mapped); setLiveTasks(true);
+    }).catch(() => undefined);
+    return () => { cancelled = true; };
+  }, []);
   const doneCount = useMemo(() => tasks.filter(t => t.done).length, [tasks]);
   const filteredTasks = tasks.filter(t => (t.title + t.meta).toLowerCase().includes(query.toLowerCase()));
   function notify(message: string) { setToast(message); window.setTimeout(() => setToast(""), 2600); }
