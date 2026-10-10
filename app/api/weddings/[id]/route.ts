@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
-async function authorizedWedding(id: string) {
+async function authorizedWedding() {
   const supabase = await createSupabaseServerClient();
   const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
   const userId = claimsData?.claims?.sub;
@@ -17,7 +17,7 @@ async function authorizedWedding(id: string) {
 export async function GET(_request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
-    const auth = await authorizedWedding(id);
+    const auth = await authorizedWedding();
     if ("response" in auth) return auth.response;
     const { data, error } = await auth.supabase.from("weddings")
       .select("id,title,couple_names,status,start_date,end_date,venue_name,venue_city,guest_count,budget,currency,notes,created_at,updated_at")
