@@ -68,6 +68,33 @@ export async function POST(request: Request, context: RouteContext) {
       if (error) throw error;
       return NextResponse.json({ event: data }, { status: 201 });
     }
+    if (input.type === "vendor_booking") {
+      const vendorName = typeof input.vendor_name === "string" ? input.vendor_name.trim().slice(0, 180) : "";
+      const category = typeof input.category === "string" ? input.category.trim().slice(0, 80) : "";
+      const service = typeof input.service_description === "string" && input.service_description.trim() ? input.service_description.trim().slice(0, 240) : title;
+      const amount = Number(input.quoted_amount ?? 0);
+      if (vendorName.length < 2 || category.length < 2) return NextResponse.json({ error: "Enter a vendor name and category" }, { status: 400 });
+      if (!Number.isFinite(amount) || amount < 0 || amount > 999999999999) return NextResponse.json({ error: "Enter a valid non-negative quote" }, { status: 400 });
+      let { data: vendor, error: vendorLookupError } = await auth.supabase.from("vendors").select("id").eq("workspace_id", auth.workspaceId).ilike("business_name", vendorName).limit(1).maybeSingle();
+      if (vendorLookupError) throw vendorLookupError;
+      if (!vendor) {
+        const createdVendor = await auth.supabase.from("vendors").insert({ workspace_id: auth.workspaceId, business_name: vendorName, category }).select("id").single();
+        if (createdVendor.error) throw createdVendor.error;
+        vendor = createdVendor.data;
+      }
+      const { data, error } = await auth.supabase.from("vendor_bookings").insert({ workspace_id: auth.workspaceId, wedding_id: id, vendor_id: vendor.id, service_description: service, quoted_amount: amount, status: "proposed" }).select("id,service_description,quoted_amount,final_amount,status,vendors(business_name,category)").single();
+      if (error) throw error;
+      return NextResponse.json({ vendor_booking: data }, { status: 201 });
+    }
+    if (input.type === "payment") {
+      const amount = Number(input.amount);
+      if (!Number.isFinite(amount) || amount < 0 || amount > 999999999999) return NextResponse.json({ error: "Enter a valid non-negative amount" }, { status: 400 });
+      const dueDate = typeof input.due_date === "string" && input.due_date ? input.due_date : null;
+      if (dueDate && (dueDate.length !== 10 || dueDate.split("-").length !== 3 || dueDate.split("-").some(part => !/^\\d+$/.test(part)))) return NextResponse.json({ error: "Choose a valid due date" }, { status: 400 });
+      const { data, error } = await auth.supabase.from("payment_milestones").insert({ workspace_id: auth.workspaceId, wedding_id: id, title, amount, due_date: dueDate, status: "planned" }).select("id,title,amount,due_date,status,paid_at").single();
+      if (error) throw error;
+      return NextResponse.json({ payment: data }, { status: 201 });
+    }
     if (input.type === "task") {
       const priorities = ["low", "normal", "high", "urgent"];
       const priority = typeof input.priority === "string" && priorities.includes(input.priority) ? input.priority : "normal";
