@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Heart, LoaderCircle, ShieldCheck } from "lucide-react";
 
@@ -12,6 +12,13 @@ export default function CoupleSetupPage() {
   const [budget, setBudget] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch("/api/workspace", { cache: "no-store" })
+      .then(async response => response.ok ? response.json() : null)
+      .then(payload => { if (payload?.membership) window.location.replace("/my-wedding"); })
+      .catch(() => undefined);
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setError("");
