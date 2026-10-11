@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { ArrowLeft, ArrowRight, CalendarDays, MapPin, Plus, Search, Users, X } from "lucide-react";
 
 type Wedding = {
@@ -55,7 +56,7 @@ export default function WeddingsPage() {
 
   const filtered = weddings.filter(w => (w.title + " " + (w.couple_names || "") + " " + (w.venue_city || "")).toLowerCase().includes(query.toLowerCase()));
   return <main className="weddings-page">
-    <header className="weddings-topbar"><a href="/" className="back-dashboard"><ArrowLeft size={16}/> Dashboard</a><div className="weddings-top-note">WEDOS / WEDDINGS</div><a className="weddings-avatar" href="/login" title="Account">AS</a></header>
+    <header className="weddings-topbar"><Link href="/" className="back-dashboard"><ArrowLeft size={16}/> Dashboard</Link><div className="weddings-top-note">WEDOS / WEDDINGS</div><a className="weddings-avatar" href="/login" title="Account">AS</a></header>
     <section className="weddings-heading"><div><div className="eyebrow">YOUR CELEBRATIONS</div><h1>Weddings</h1><p>One workspace for every couple, ceremony, vendor and moving part.</p></div><button className="btn primary" onClick={()=>setShowCreate(true)}><Plus size={15}/> New wedding</button></section>
     <section className="weddings-toolbar"><div className="weddings-search"><Search size={16}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search weddings, couples or cities"/></div><span>{weddings.length} {weddings.length===1?"celebration":"celebrations"}</span></section>
     {error&&<div className="weddings-error" role="alert"><strong>Could not load your workspace data.</strong><span>{error}</span><button onClick={()=>void load()}>Try again</button>{error.includes("Sign in")&&<a href="/login">Sign in to continue</a>}</div>}
