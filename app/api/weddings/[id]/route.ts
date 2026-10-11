@@ -126,6 +126,29 @@ export async function PATCH(request: Request, context: RouteContext) {
     const body: unknown = await request.json();
     if (!body || typeof body !== "object") return NextResponse.json({ error: "Invalid update" }, { status: 400 });
     const input = body as Record<string, unknown>;
+    if (input.type === "task" || input.type === "vendor_booking" || input.type === "payment") {
+      if (typeof input.item_id !== "string" || !input.item_id) return NextResponse.json({ error: "Item id is required" }, { status: 400 });
+      if (typeof input.status !== "string") return NextResponse.json({ error: "Item status is required" }, { status: 400 });
+      if (input.type === "task") {
+        if (!["todo", "in_progress", "blocked", "done"].includes(input.status)) return NextResponse.json({ error: "Invalid task status" }, { status: 400 });
+        const { data, error } = await auth.supabase.from("tasks").update({ status: input.status, completed_at: input.status === "done" ? new Date().toISOString() : null, updated_at: new Date().toISOString() }).eq("id", input.item_id).eq("wedding_id", id).eq("workspace_id", auth.workspaceId).select("id,title,status,priority,due_at").maybeSingle();
+        if (error) throw error;
+        if (!data) return NextResponse.json({ error: "Task not found" }, { status: 404 });
+        return NextResponse.json({ task: data });
+      }
+      if (input.type === "vendor_booking") {
+        if (!["proposed", "quoted", "confirmed", "completed", "cancelled"].includes(input.status)) return NextResponse.json({ error: "Invalid vendor booking status" }, { status: 400 });
+        const { data, error } = await auth.supabase.from("vendor_bookings").update({ status: input.status, updated_at: new Date().toISOString() }).eq("id", input.item_id).eq("wedding_id", id).eq("workspace_id", auth.workspaceId).select("id,status,quoted_amount,final_amount").maybeSingle();
+        if (error) throw error;
+        if (!data) return NextResponse.json({ error: "Vendor booking not found" }, { status: 404 });
+        return NextResponse.json({ vendor_booking: data });
+      }
+      if (!["planned", "due", "paid", "overdue", "cancelled"].includes(input.status)) return NextResponse.json({ error: "Invalid payment status" }, { status: 400 });
+      const { data, error } = await auth.supabase.from("payment_milestones").update({ status: input.status, paid_at: input.status === "paid" ? new Date().toISOString() : null, updated_at: new Date().toISOString() }).eq("id", input.item_id).eq("wedding_id", id).eq("workspace_id", auth.workspaceId).select("id,status,paid_at").maybeSingle();
+      if (error) throw error;
+      if (!data) return NextResponse.json({ error: "Payment milestone not found" }, { status: 404 });
+      return NextResponse.json({ payment: data });
+    }
     const allowed: Record<string, unknown> = {};
     for (const key of ["title","couple_names","status","start_date","end_date","venue_name","venue_city","guest_count","budget","notes"]) {
       if (key in input) allowed[key] = input[key];
