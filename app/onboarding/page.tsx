@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { ArrowRight, Heart, UsersRound, ShieldCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function OnboardingPage() {
+  const router = useRouter();
   return <main className="setup-shell">
     <header className="setup-topbar">
       <Link href="/login" className="setup-brand"><span className="setup-brand-mark">w.</span><span>wedos</span></Link>
@@ -14,7 +16,7 @@ export default function OnboardingPage() {
       <h1>How are you planning this wedding?</h1>
       <p className="setup-intro">We'll tailor your workspace to the way you work. You can invite your partner or collaborate with a planner later.</p>
       <div className="setup-choice-grid">
-        <Link href="/onboarding/couple" className="setup-choice">
+        <Link href="/onboarding/couple" className="setup-choice" onClick={() => localStorage.setItem("wedos-persona", "couple")}>
           <div className="setup-choice-icon"><Heart size={22}/></div>
           <div className="setup-choice-copy">
             <span className="setup-choice-label">FOR THE COUPLE</span>
@@ -23,7 +25,7 @@ export default function OnboardingPage() {
           </div>
           <div className="setup-choice-footer"><span>Set up our wedding</span><ArrowRight size={17}/></div>
         </Link>
-        <Link href="/onboarding/planner" className="setup-choice">
+        <Link href="/onboarding/planner" className="setup-choice" onClick={() => localStorage.setItem("wedos-persona", "planner")}>
           <div className="setup-choice-icon"><UsersRound size={22}/></div>
           <div className="setup-choice-copy">
             <span className="setup-choice-label">FOR EVENT PLANNERS</span>
