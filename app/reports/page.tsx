@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowDownToLine, ArrowLeft, ArrowUpRight, CalendarDays, CircleDollarSign, ClipboardCheck, Heart, TrendingUp, WalletCards } from "lucide-react";
+import { ArrowDownToLine, ArrowLeft, CalendarDays, CircleDollarSign, ClipboardCheck, Heart, TrendingUp, WalletCards } from "lucide-react";
 
 type Wedding={id:string;title:string;status:string;start_date:string|null;guest_count:number|null;budget:number;currency:string;venue_city:string|null};
 type Event={id:string;title:string;starts_at:string|null};
@@ -12,7 +12,6 @@ type Payment={id:string;amount:number;status:string;due_date:string|null};
 type Detail={wedding:Wedding;events:Event[];tasks:Task[];vendor_bookings:Booking[];payments:Payment[]};
 type Report={wedding:Wedding;events:Event[];tasks:Task[];bookings:Booking[];payments:Payment[]};
 const money=(n:number,c="INR")=>new Intl.NumberFormat("en-IN",{style:"currency",currency:c,maximumFractionDigits:0}).format(n);
-const statusColor:Record<string,string>={lead:"#eee8f4",planning:"#f7efd9",confirmed:"#e4eee6",completed:"#e7edf5",archived:"#f0eeea"};
 export default function ReportsPage(){
  const [rows,setRows]=useState<Report[]>([]);const [loading,setLoading]=useState(true);const [error,setError]=useState("");
  useEffect(()=>{let cancelled=false;async function load(){try{const response=await fetch("/api/weddings",{cache:"no-store"});const payload=await response.json();if(!response.ok)throw new Error(payload.error||"Unable to load reports");const details=await Promise.all((payload.weddings||[]).map(async(w:Wedding)=>{const r=await fetch("/api/weddings/"+encodeURIComponent(w.id),{cache:"no-store"});const d=await r.json();if(!r.ok)throw new Error(d.error||"Unable to load report details");const detail=d as Detail;return {wedding:detail.wedding,events:detail.events||[],tasks:detail.tasks||[],bookings:detail.vendor_bookings||[],payments:detail.payments||[]}}));if(!cancelled)setRows(details)}catch(e){if(!cancelled)setError(e instanceof Error?e.message:"Unable to load reports")}finally{if(!cancelled)setLoading(false)}}void load();return()=>{cancelled=true}},[]);
