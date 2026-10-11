@@ -121,7 +121,7 @@ export async function POST(request: Request, context: RouteContext) {
 export async function PATCH(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
-    const auth = await authorizedWedding();
+    const auth = await authorizedWedding(id);
     if ("response" in auth) return auth.response;
     const body: unknown = await request.json();
     if (!body || typeof body !== "object") return NextResponse.json({ error: "Invalid update" }, { status: 400 });
