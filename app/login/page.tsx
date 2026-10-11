@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { ArrowRight, CheckCircle2, Mail, ShieldCheck } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
@@ -51,8 +52,8 @@ export default function LoginPage() {
       </form>
       {message&&<div role="status" className="login-success"><CheckCircle2 size={17}/>{message}</div>}
       {error&&<div role="alert" className="login-error">{error}</div>}
-      <p className="login-privacy">Your studio data is private to your workspace. Access is controlled by your organisation's membership.</p>
-      <a className="login-back" href="/">← Back to dashboard preview</a>
+      <p className="login-privacy">Your studio data is private to your workspace. Access is controlled by your organisation&apos;s membership.</p>
+      <Link className="login-back" href="/">← Back to dashboard preview</Link>
     </div></section>
   </main>;
 }
