@@ -79,8 +79,9 @@ export async function POST(request: Request, context: RouteContext) {
       const amount = Number(input.quoted_amount ?? 0);
       if (vendorName.length < 2 || category.length < 2) return NextResponse.json({ error: "Enter a vendor name and category" }, { status: 400 });
       if (!Number.isFinite(amount) || amount < 0 || amount > 999999999999) return NextResponse.json({ error: "Enter a valid non-negative quote" }, { status: 400 });
-      let { data: vendor, error: vendorLookupError } = await auth.supabase.from("vendors").select("id").eq("workspace_id", auth.workspaceId).ilike("business_name", vendorName).limit(1).maybeSingle();
+      const { data: existingVendor, error: vendorLookupError } = await auth.supabase.from("vendors").select("id").eq("workspace_id", auth.workspaceId).ilike("business_name", vendorName).limit(1).maybeSingle();
       if (vendorLookupError) throw vendorLookupError;
+      let vendor = existingVendor;
       if (!vendor) {
         const createdVendor = await auth.supabase.from("vendors").insert({ workspace_id: auth.workspaceId, business_name: vendorName, category }).select("id").single();
         if (createdVendor.error) throw createdVendor.error;
