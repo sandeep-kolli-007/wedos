@@ -266,3 +266,24 @@ button:disabled{cursor:not-allowed;opacity:.55}
 .login-mark{border-radius:8px}
 .couple-hero{border-radius:12px}
 @media(max-width:760px){.login-brand-panel{background:#171717}}
+
+
+/* Mobile app shell: reserve space for the fixed, safe-area-aware tab bar. */
+@media (max-width: 767px) {
+  body:has(.mobile-tabbar) .mobile-app-content {
+    min-height: 100dvh;
+    padding-bottom: calc(70px + env(safe-area-inset-bottom));
+  }
+  .mobile-tabbar {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .mobile-tabbar a,
+  .mobile-tabbar button {
+    min-width: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  input, select, textarea {
+    font-size: 16px;
+  }
+}
