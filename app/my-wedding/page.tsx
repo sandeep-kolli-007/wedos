@@ -28,7 +28,7 @@ export default function MyWeddingPage() {
   const modules=[
     {icon:CalendarDays,title:"Ceremonies & timeline",desc:"Organise every function and its schedule",href:"/timeline"},
     {icon:ClipboardList,title:"Planning checklist",desc:"Keep decisions and next steps in one place",href:"/tasks"},
-    {icon:Users,title:"Guest list",desc:"Build your guest list and track responses",href:"/documents"},
+    {icon:Users,title:"Guest list",desc:"Build your guest list and track responses",href:"/guests"},
     {icon:Wallet,title:"Budget & payments",desc:"Track estimates, commitments and payments",href:"/budget"},
   ];
   return <main className="couple-app">
@@ -39,7 +39,7 @@ export default function MyWeddingPage() {
       <Link className="couple-nav" href="/timeline"><CalendarDays size={17}/> Ceremonies & timeline</Link>
       <Link className="couple-nav" href="/tasks"><ClipboardList size={17}/> Checklist</Link>
       <Link className="couple-nav" href="/budget"><CircleDollarSign size={17}/> Budget</Link>
-      <Link className="couple-nav" href="/documents"><Users size={17}/> Guests & documents</Link>
+      <Link className="couple-nav" href="/guests"><Users size={17}/> Guests & RSVP</Link>
       <div className="couple-sidebar-bottom"><div className="couple-private"><CheckCircle2 size={16}/><span>Your wedding space is private to invited members.</span></div></div>
     </aside>
     <section className="couple-main">
