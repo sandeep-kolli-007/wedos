@@ -52,7 +52,7 @@ This is the initial implementation foundation, not yet a production-ready multi-
 
 1. Configure Supabase URL and publishable key in `.env.local`.
 2. Enable email sign-in and configure the redirect allow-list to include your local and deployed `/auth/callback` URL.
-3. Apply migrations in order: `0001_core_schema.sql` through `0008_workspace_kind.sql`. The seventh migration creates the private `wedos-documents` Storage bucket and workspace-member access policies.
+3. Apply migrations in order: `0001_core_schema.sql` through `0009_guest_management.sql`. The seventh migration creates the private `wedos-documents` Storage bucket and workspace-member access policies.
 4. Open `/login`, request a magic link, and create the first workspace via `POST /api/workspace` with `{ "name": "Your Studio" }` after sign-in.
 5. The task API at `/api/tasks` supports authenticated listing, creation, and completion updates. The dashboard reads live tasks when the backend is configured and reachable.
 
@@ -66,6 +66,7 @@ The current dashboard metrics, events and vendor list remain illustrative previe
 - `/onboarding/planner`: create a planner studio and its first wedding workspace.
 - `/my-wedding`: couple-facing wedding overview.
 - `/my-wedding/details`: edit wedding date, city, guest count, and estimated budget without entering the planner operations UI.
+- `/guests`: maintain a wedding-specific guest list, party size, family side, contact details, and RSVP status.
 - `/weddings`: create and search wedding workspaces.
 - `/weddings/[id]`: manage event timelines, tasks, vendor bookings, payment milestones, and wedding status.
 - `/timeline`: cross-wedding view of scheduled events and due tasks.
