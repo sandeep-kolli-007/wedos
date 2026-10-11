@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Check, FileImage, Plus, Send, Sparkles } from "lucide-react";
 
@@ -10,7 +10,7 @@ const statusStyle:Record<string,string>={draft:"#eff0ec",in_review:"#f6eddb",app
 const types=["moodboard","invitation","itinerary","signage","social_post","other"];
 export default function DesignPage(){
  const [assets,setAssets]=useState<Asset[]>([]);const [weddings,setWeddings]=useState<Wedding[]>([]);const [loading,setLoading]=useState(true);const [error,setError]=useState("");const [title,setTitle]=useState("");const [weddingId,setWeddingId]=useState("");const [assetType,setAssetType]=useState("moodboard");const [busy,setBusy]=useState(false);const [filter,setFilter]=useState("All statuses");
- async function load(){
+ const load = useCallback(async()=>{
   setLoading(true);setError("");
   try{
    const [assetResponse,weddingResponse]=await Promise.all([fetch("/api/design-assets",{cache:"no-store"}),fetch("/api/weddings",{cache:"no-store"})]);
@@ -21,8 +21,8 @@ export default function DesignPage(){
    if(!weddingId&&weddingData.weddings?.[0])setWeddingId(weddingData.weddings[0].id);
   }catch(cause){setError(cause instanceof Error?cause.message:"Unable to load design assets");}
   finally{setLoading(false);}
- }
- useEffect(()=>{void load();},[]);
+ },[weddingId]);
+ useEffect(()=>{void load();},[load]);
  async function create(event:FormEvent<HTMLFormElement>){
   event.preventDefault();if(!title.trim()||!weddingId)return;setBusy(true);setError("");
   try{const response=await fetch("/api/design-assets",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({title,wedding_id:weddingId,asset_type:assetType})});const payload=await response.json();if(!response.ok)throw new Error(payload.error||"Unable to create asset");setAssets(prev=>[payload.asset,...prev]);setTitle("");}
