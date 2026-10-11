@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
+import Link from "next/link";
 import { ArrowLeft, Check, Download, Heart, ImagePlus, Layers, Music2, Palette, Play, Share2, Sparkles, Sticker, Type, Undo2, Upload, Video, WandSparkles, X } from "lucide-react";
 import styles from "./page.module.css";
 
@@ -23,7 +24,7 @@ export default function CountdownStudioPage(){
   const url=URL.createObjectURL(new Blob([svg],{type:"image/svg+xml"}));const a=document.createElement("a");a.href=url;a.download="wedos-"+days+"-days-to-go.svg";a.click();URL.revokeObjectURL(url);setExporting(false);setSaved(true);
  }
  return <main className={styles.app}>
-  <header className={styles.top}><a href="/weddings"><ArrowLeft size={17}/> Our Wedding</a><div className={styles.brand}><Heart fill="currentColor"/> WedOS <i>Studio</i></div><div className={styles.topRight}><span>● {saved?"Saved just now":"All changes saved"}</span><button onClick={()=>setSaved(true)} aria-label="Undo"><Undo2 size={17}/></button><button className={styles.share} onClick={()=>setExporting(true)}><Share2 size={15}/> Export & share</button></div></header>
+  <header className={styles.top}><Link href="/weddings"><ArrowLeft size={17}/> Our Wedding</Link><div className={styles.brand}><Heart fill="currentColor"/> WedOS <i>Studio</i></div><div className={styles.topRight}><span>● {saved?"Saved just now":"All changes saved"}</span><button onClick={()=>setSaved(true)} aria-label="Undo"><Undo2 size={17}/></button><button className={styles.share} onClick={()=>setExporting(true)}><Share2 size={15}/> Export & share</button></div></header>
   <section className={styles.heading}><div><small>COUNTDOWN STUDIO · YOUR WEDDING, YOUR STORY</small><h1>Make the days feel <em>unforgettable.</em></h1><p>Design one countdown, then create a whole series that feels like you.</p></div><div className={styles.project}><b>♥</b><span><strong>{names}</strong><small>Wedding countdown · Draft</small></span></div></section>
   <div className={styles.editor}>
    <nav className={styles.rail}>{[{n:"Design",i:<Palette/>},{n:"Elements",i:<Sticker/>},{n:"Text",i:<Type/>},{n:"Photos",i:<ImagePlus/>},{n:"Audio",i:<Music2/>},{n:"Animate",i:<Video/>}].map(t=><button key={t.n} className={tab===t.n?styles.activeTool:""} onClick={()=>setTab(t.n)}>{t.i}<small>{t.n}</small></button>)}</nav>
