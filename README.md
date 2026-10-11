@@ -52,8 +52,23 @@ This is the initial implementation foundation, not yet a production-ready multi-
 
 1. Configure Supabase URL and publishable key in `.env.local`.
 2. Enable email sign-in and configure the redirect allow-list to include your local and deployed `/auth/callback` URL.
-3. Apply migrations in order: `0001_core_schema.sql`, `0002_workspace_onboarding.sql`, then `0003_security_hardening.sql`.
+3. Apply migrations in order: `0001_core_schema.sql` through `0007_private_document_storage.sql`. The seventh migration creates the private `wedos-documents` Storage bucket and workspace-member access policies.
 4. Open `/login`, request a magic link, and create the first workspace via `POST /api/workspace` with `{ "name": "Your Studio" }` after sign-in.
 5. The task API at `/api/tasks` supports authenticated listing, creation, and completion updates. The dashboard reads live tasks when the backend is configured and reachable.
 
 The current dashboard metrics, events and vendor list remain illustrative preview data until their corresponding CRUD and aggregation endpoints are connected. The schema and RLS policies require a security review and integration tests before production use.
+
+
+## Workspace flows
+
+- `/weddings`: create and search wedding workspaces.
+- `/weddings/[id]`: manage event timelines, tasks, vendor bookings, payment milestones, and wedding status.
+- `/timeline`: cross-wedding view of scheduled events and due tasks.
+- `/tasks`: create, filter, complete, and reopen workspace tasks.
+- `/vendors`: search vendor bookings and review quoted/committed values.
+- `/budget`: compare wedding budgets, vendor commitments, and payment milestones.
+- `/design`: create design deliverables and track draft → review → approved → published states.
+- `/documents`: upload and download private workspace documents (PDF, JPG, PNG, WebP, DOCX, XLSX; up to 20 MB).
+- `/countdown`: countdown design studio with SVG export.
+
+Document upload requires migration `0007_private_document_storage.sql` to be applied to the connected Supabase project. All workspace flows require authenticated Supabase users and a workspace membership. No demo wedding records are inserted automatically.
