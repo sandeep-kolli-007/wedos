@@ -48,8 +48,8 @@ export default function PlannerSetupPage() {
         <div className="setup-choice-icon"><UsersRound size={22}/></div>
         <div className="setup-kicker">FOR EVENT PLANNERS · STEP 1 OF 2</div>
         <h1>Create a wedding space for your clients.</h1>
-        <p>Set up the couple's wedding record first. The couple-facing experience can be shared with them as collaboration and access controls are enabled.</p>
-        <div className="setup-aside-note"><span className="setup-note-check">✓</span><span>Keep this wedding's details together</span></div>
+        <p>Set up the couple&apos;s wedding record first. The couple-facing experience can be shared with them as collaboration and access controls are enabled.</p>
+        <div className="setup-aside-note"><span className="setup-note-check">✓</span><span>Keep this wedding&apos;s details together</span></div>
         <div className="setup-aside-note"><span className="setup-note-check">✓</span><span>Add ceremonies, vendors and schedules later</span></div>
         <div className="setup-aside-note"><span className="setup-note-check">✓</span><span>Manage client weddings in your workspace</span></div>
       </div>
@@ -59,8 +59,8 @@ export default function PlannerSetupPage() {
         <p className="setup-form-description">Your studio workspace and this wedding are created separately.</p>
         <label className="setup-field"><span>Studio or business name</span><input required minLength={2} maxLength={80} value={studio} onChange={e=>setStudio(e.target.value)} placeholder="e.g. Atelier Celebrations"/></label>
         <div className="setup-two-fields">
-          <label className="setup-field"><span>Bride's name</span><input required maxLength={80} value={bride} onChange={e=>setBride(e.target.value)} placeholder="e.g. Ananya"/></label>
-          <label className="setup-field"><span>Groom's name</span><input required maxLength={80} value={groom} onChange={e=>setGroom(e.target.value)} placeholder="e.g. Rahul"/></label>
+          <label className="setup-field"><span>Bride&apos;s name</span><input required maxLength={80} value={bride} onChange={e=>setBride(e.target.value)} placeholder="e.g. Ananya"/></label>
+          <label className="setup-field"><span>Groom&apos;s name</span><input required maxLength={80} value={groom} onChange={e=>setGroom(e.target.value)} placeholder="e.g. Rahul"/></label>
         </div>
         <label className="setup-field"><span>Wedding date <em>Optional</em></span><input type="date" value={date} onChange={e=>setDate(e.target.value)}/></label>
         <label className="setup-field"><span>Wedding city <em>Optional</em></span><input maxLength={100} value={city} onChange={e=>setCity(e.target.value)} placeholder="e.g. Hyderabad"/></label>
