@@ -94,7 +94,7 @@ export async function POST(request: Request, context: RouteContext) {
       const amount = Number(input.amount);
       if (!Number.isFinite(amount) || amount < 0 || amount > 999999999999) return NextResponse.json({ error: "Enter a valid non-negative amount" }, { status: 400 });
       const dueDate = typeof input.due_date === "string" && input.due_date ? input.due_date : null;
-      if (dueDate && (dueDate.length !== 10 || dueDate.split("-").length !== 3 || dueDate.split("-").some(part => !/^\\d+$/.test(part)))) return NextResponse.json({ error: "Choose a valid due date" }, { status: 400 });
+      if (dueDate && (dueDate.length !== 10 || dueDate.split("-").length !== 3 || dueDate.split("-").some(part => !/^\d+$/.test(part)))) return NextResponse.json({ error: "Choose a valid due date" }, { status: 400 });
       const { data, error } = await auth.supabase.from("payment_milestones").insert({ workspace_id: auth.workspaceId, wedding_id: id, title, amount, due_date: dueDate, status: "planned" }).select("id,title,amount,due_date,status,paid_at").single();
       if (error) throw error;
       return NextResponse.json({ payment: data }, { status: 201 });
