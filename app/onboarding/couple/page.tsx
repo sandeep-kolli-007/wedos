@@ -23,7 +23,8 @@ export default function CoupleSetupPage() {
       const weddingResponse = await fetch("/api/weddings", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({title:names + " Wedding", couple_names:names, start_date:date || undefined, venue_city:city.trim() || undefined, budget:budget ? Number(budget) : 0}) });
       const weddingPayload = await weddingResponse.json();
       if (!weddingResponse.ok) throw new Error(weddingPayload.error || "Your wedding space was created, but the wedding details could not be saved. Please continue from Weddings.");
-      window.location.assign("/");
+      localStorage.setItem("wedos-persona", "couple");
+      window.location.assign("/my-wedding");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Unable to finish setup. Please try again.");
     } finally { setBusy(false); }
