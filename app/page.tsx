@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ArrowDownRight, ArrowRight, ArrowUpRight, Bell, CalendarDays, Check, ChevronDown, CircleDollarSign, ClipboardCheck, Clock3, Compass, FileText, Heart, LayoutDashboard, Menu, MessageCircle, Plus, Search, Settings2, Sparkles, Users, WalletCards, X } from "lucide-react";
+import { ArrowDownRight, ArrowRight, ArrowUpRight, Bell, CalendarDays, Check, ChevronDown, CircleDollarSign, ClipboardCheck, Compass, FileText, Heart, LayoutDashboard, Menu, MessageCircle, Plus, Search, Settings2, Sparkles, Users, WalletCards, X } from "lucide-react";
 
 type Task = { id: number | string; title: string; meta: string; priority: "High" | "Normal" | "Low" | "Urgent"; done: boolean };
 const initialTasks: Task[] = [
@@ -30,7 +30,6 @@ const nav = [
   { label: "Design studio", icon: Sparkles },
   { label: "Documents", icon: FileText },
 ];
-const money = (n: number) => "₹" + n.toLocaleString("en-IN");
 function BudgetChart() {
   const points = "0,114 37,97 74,104 111,74 148,82 185,58 222,68 259,42 296,53 333,27 370,35 407,12";
   return <svg viewBox="0 0 420 145" preserveAspectRatio="none" className="chart" role="img" aria-label="Budget spend trend chart">
@@ -104,7 +103,7 @@ export default function Home() {
     <main className="main">
       <header className="topbar"><div className="crumb">Workspace <span style={{padding:"0 8px",color:"#c5c8c2"}}>/</span><b>{activeNav}</b></div><div className="top-actions"><label className="searchbox"><Search size={15}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search anything..." aria-label="Search tasks"/></label><button className="icon-btn" aria-label="Notifications" onClick={()=>notify("You're all caught up on notifications")}><Bell/><span className="notification-dot"/></button><button className="icon-btn" aria-label="Help" onClick={()=>notify("WedOS help centre coming soon")}><Compass/></button><a className="user-mini" title="Sign in to WedOS" href="/login">AS</a></div></header>
       <section className="page-head"><div><div className="eyebrow">MONDAY, 10 OCTOBER 2026</div><h1>Your celebrations, in motion.</h1><p>A clear view of the work behind every unforgettable moment.</p></div><div className="head-actions"><button className="btn" onClick={()=>notify("Export report is being prepared")}><ArrowDownRight/> Export report</button><button className="btn primary" onClick={()=>setShowNew(true)}><Plus/> New task</button></div></section>
-      <section className="welcome-strip"><div className="welcome-copy"><div className="eyebrow">YOUR STUDIO AT A GLANCE</div><h2>Good afternoon, Atelier team.</h2><p>Three celebrations are moving this week. Here’s what needs your eye.</p></div><div className="welcome-date"><strong>October 2026</strong>{liveTasks ? "Live workspace tasks" : "Preview data · Connect Supabase to sync"}</div></section>
+      <section className="welcome-strip"><div className="welcome-copy"><div className="eyebrow">YOUR STUDIO AT A GLANCE</div><h2>Good afternoon, Atelier team.</h2><p>Three celebrations are moving this week. Here&apos;s what needs your eye.</p></div><div className="welcome-date"><strong>October 2026</strong>{liveTasks ? "Live workspace tasks" : "Preview data · Connect Supabase to sync"}</div></section>
       <section className="metric-grid">
         <div className="metric-card"><div className="metric-top"><span className="metric-label">Active weddings</span><span className="metric-icon tone-green"><Heart/></span></div><div className="metric-value">08</div><div className="metric-foot"><span className="trend"><ArrowUpRight size={12} style={{display:"inline",verticalAlign:"middle"}}/> 2 new</span> <span>this month</span></div></div>
         <div className="metric-card"><div className="metric-top"><span className="metric-label">Budget under management</span><span className="metric-icon tone-orange"><CircleDollarSign/></span></div><div className="metric-value">₹1.84 Cr</div><div className="metric-foot"><span className="trend">68%</span><span>committed across weddings</span></div></div>
