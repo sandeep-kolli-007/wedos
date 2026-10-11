@@ -10,7 +10,6 @@ type Guest = {
   phone: string | null; side: string; rsvp_status: string; party_size: number;
   dietary_notes: string | null; notes: string | null;
 };
-const statusLabel: Record<string, string> = { pending: "Pending", invited: "Invited", attending: "Attending", declined: "Declined" };
 
 export default function GuestsPage() {
   const [weddings, setWeddings] = useState<Wedding[]>([]);
@@ -117,7 +116,7 @@ export default function GuestsPage() {
     {error && <div role="alert" style={{ padding: 12, borderRadius: 9, background: "#fae8e4", color: "#853c32", marginBottom: 12 }}>{error}</div>}
     {notice && <div role="status" style={{ padding: 12, borderRadius: 9, background: "#e7f1e9", color: "#28533e", marginBottom: 12 }}>{notice}</div>}
     {!loading && !weddings.length ? <section style={{ background: "#fff", border: "1px solid #e3e7e0", borderRadius: 14, padding: 24 }}><h2 style={{ marginTop: 0 }}>Create your wedding first</h2><p style={{ color: "#737d74" }}>Your guest list belongs to a specific wedding workspace.</p><Link href="/my-wedding/details" style={{ color: "#244b3c", fontWeight: 700 }}>Add wedding details</Link></section> :
-    <section style={{ display: "grid", gridTemplateColumns: "minmax(260px,.72fr) minmax(0,1.5fr)", gap: 16, alignItems: "start" }}>
+    <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,340px),1fr))", gap: 16, alignItems: "start" }}>
       <form onSubmit={addGuest} style={{ background: "#fff", border: "1px solid #e3e7e0", borderRadius: 13, padding: 18, display: "grid", gap: 13 }}>
         <div><div style={{ color: "#8b9189", fontSize: 10, letterSpacing: 1.5, fontWeight: 700 }}>ADD PERSON</div><h2 style={{ fontSize: 18, margin: "6px 0 0" }}>New guest</h2></div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 9 }}><label style={label}>First name<input required maxLength={80} value={firstName} onChange={e => setFirstName(e.target.value)} style={field} placeholder="First name"/></label><label style={label}>Last name<input maxLength={80} value={lastName} onChange={e => setLastName(e.target.value)} style={field} placeholder="Last name"/></label></div>
