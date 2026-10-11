@@ -44,7 +44,7 @@ export default function MyWeddingPage() {
     </aside>
     <section className="couple-main">
       <header className="couple-topbar"><span className="couple-breadcrumb">WedOS <ChevronRight size={14}/> My wedding</span><Link className="couple-avatar" href="/settings" aria-label="Settings">W</Link></header>
-      <div className="couple-page-head"><div><div className="setup-kicker">YOUR WEDDING WORKSPACE</div><h1>{loading?"Loading your wedding…":wedding?.couple_names||"Your wedding"}</h1><p>One shared place to plan together, make decisions and keep every detail on track.</p></div><button className="couple-outline-button" onClick={()=>window.location.assign("/weddings")}><Plus size={16}/> Wedding details</button></div>
+      <div className="couple-page-head"><div><div className="setup-kicker">YOUR WEDDING WORKSPACE</div><h1>{loading?"Loading your wedding…":wedding?.couple_names||"Your wedding"}</h1><p>One shared place to plan together, make decisions and keep every detail on track.</p></div><button className="couple-outline-button" onClick={()=>window.location.assign("/my-wedding/details")}><Plus size={16}/> Wedding details</button></div>
       {error&&<div className="setup-error" role="alert">{error}</div>}
       {!loading&&!wedding&&!error&&<section className="couple-empty"><div className="couple-empty-icon"><Heart size={22}/></div><h2>Your wedding space is ready</h2><p>We couldn&apos;t find a wedding record yet. Add your wedding details to start planning.</p><Link className="couple-primary-button" href="/weddings">Set up wedding details <ChevronRight size={16}/></Link></section>}
       {wedding&&<><section className="couple-hero">
