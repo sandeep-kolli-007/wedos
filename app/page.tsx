@@ -80,18 +80,29 @@ export default function Home() {
         setTasks(prev => [{ id: task.id, title: task.title, meta: task.due_at ? "Due " + new Date(task.due_at).toLocaleDateString("en-IN") : "Workspace · Planning", priority: "Normal", done: task.status === "done" }, ...prev]);
         setLiveTasks(true); setNewTitle(""); setShowNew(false); notify("Task saved to your workspace"); return;
       }
-    } catch { /* Keep dashboard preview usable without a backend connection. */ }
-    setTasks(prev => [{ id: Date.now(), title, meta: "Demo · Planning", priority: "Normal", done: false }, ...prev]);
-    setNewTitle(""); setShowNew(false); notify("Task added to dashboard preview");
+    } catch {
+      notify("Could not reach WedOS. Check your connection and try again.");
+      return;
+    }
+    notify("Task could not be saved. Your task list was not changed.");
   }
   async function toggleTask(task: Task) {
     const nextDone = !task.done;
-    setTasks(prev => prev.map(item => item.id === task.id ? { ...item, done: nextDone } : item));
-    if (typeof task.id !== "string") return;
+    if (typeof task.id !== "string") {
+      setTasks(prev => prev.map(item => item.id === task.id ? { ...item, done: nextDone } : item));
+      return;
+    }
     try {
       const response = await fetch("/api/tasks", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: task.id, done: nextDone }) });
-      if (!response.ok) notify("Could not sync task change; refresh and try again");
-    } catch { notify("Task change is local only while offline"); }
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        notify(payload.error || "Could not update task. Your list is unchanged.");
+        return;
+      }
+      setTasks(prev => prev.map(item => item.id === task.id ? { ...item, done: nextDone } : item));
+    } catch {
+      notify("Could not reach WedOS. Your task list is unchanged.");
+    }
   }
   return <div className="app-shell">
     <aside className="sidebar">
