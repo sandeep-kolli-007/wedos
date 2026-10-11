@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import MobileAppNavigation from "@/components/mobile-app-navigation";
 
 export const metadata: Metadata = {
   title: "WedOS — Wedding Operations, Beautifully Connected",
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body><div className="mobile-app-content">{children}</div><MobileAppNavigation /></body>
     </html>
   );
 }
