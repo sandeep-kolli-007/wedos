@@ -1,5 +1,5 @@
 "use client";
-import {useEffect,useMemo,useState} from "react";import Link from "next/link";import {ArrowLeft,Check,Clock3,FileImage,MessageCircleMore,RefreshCw,Send} from "lucide-react";
+import {useEffect,useMemo,useState} from "react";import Link from "next/link";import {ArrowLeft,Check,FileImage,RefreshCw} from "lucide-react";
 type Asset={id:string;wedding_id:string;title:string;asset_type:string;status:string;preview_url:string|null;version:number;created_at:string;updated_at:string;weddings:{title:string;couple_names:string|null}|null};
 const states=["draft","in_review","approved","published","archived"];
 const tone:Record<string,{bg:string;color:string;label:string}>={draft:{bg:"#f0eee8",color:"#716e63",label:"Draft"},in_review:{bg:"#f8efd9",color:"#97713a",label:"Needs review"},approved:{bg:"#e4eee6",color:"#386449",label:"Approved"},published:{bg:"#eee8f5",color:"#785b91",label:"Published"},archived:{bg:"#f6e8e5",color:"#a25e54",label:"Archived"}};
