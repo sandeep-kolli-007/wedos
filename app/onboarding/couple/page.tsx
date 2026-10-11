@@ -16,7 +16,7 @@ export default function CoupleSetupPage() {
   useEffect(() => {
     fetch("/api/workspace", { cache: "no-store" })
       .then(async response => response.ok ? response.json() : null)
-      .then(payload => { if (payload?.membership) window.location.replace("/my-wedding"); })
+      .then(payload => { if (payload?.membership) window.location.replace(payload.membership.workspaces?.workspace_kind === "couple" ? "/my-wedding" : "/weddings"); })
       .catch(() => undefined);
   }, []);
 
@@ -24,7 +24,7 @@ export default function CoupleSetupPage() {
     event.preventDefault(); setBusy(true); setError("");
     try {
       const names = [bride.trim(), groom.trim()].filter(Boolean).join(" & ");
-      const workspaceResponse = await fetch("/api/workspace", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({name:names + " Wedding"}) });
+      const workspaceResponse = await fetch("/api/workspace", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({name:names + " Wedding",kind:"couple"}) });
       const workspacePayload = await workspaceResponse.json();
       if (!workspaceResponse.ok) throw new Error(workspacePayload.error || "Unable to create your wedding space");
       const weddingResponse = await fetch("/api/weddings", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({title:names + " Wedding", couple_names:names, start_date:date || undefined, venue_city:city.trim() || undefined, budget:budget ? Number(budget) : 0}) });
