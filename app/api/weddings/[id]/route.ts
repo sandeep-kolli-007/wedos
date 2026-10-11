@@ -43,7 +43,7 @@ export async function GET(_request: Request, context: RouteContext) {
 export async function PATCH(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
-    const auth = await authorizedWedding(id);
+    const auth = await authorizedWedding();
     if ("response" in auth) return auth.response;
     const body: unknown = await request.json();
     if (!body || typeof body !== "object") return NextResponse.json({ error: "Invalid update" }, { status: 400 });
