@@ -30,6 +30,7 @@ const nav = [
   { label: "Design studio", icon: Sparkles },
   { label: "Countdown Studio", icon: Sparkles },
   { label: "Documents", icon: FileText },
+  { label: "Reports & insights", icon: ArrowUpRight },
 ];
 function BudgetChart() {
   const points = "0,114 37,97 74,104 111,74 148,82 185,58 222,68 259,42 296,53 333,27 370,35 407,12";
@@ -108,7 +109,7 @@ export default function Home() {
     <aside className="sidebar">
       <div className="brand"><div className="brand-mark">w.</div><div className="brand-name">wed<span>os</span></div></div>
       <button className="workspace" onClick={() => notify("Workspace switcher is ready for multi-team setup")}><div className="workspace-icon">A</div><div><small>WORKSPACE</small><strong>Atelier Celebrations</strong></div><ChevronDown size={14} style={{marginLeft:"auto",color:"#858a84"}}/></button>
-      <div><div className="side-label">WORKSPACE</div><nav className="nav-group">{nav.map(item=>{const Icon=item.icon;return <button key={item.label} className={`nav-item ${activeNav===item.label?"active":""}`} onClick={()=>{const routes:Record<string,string>={Overview:"/",Weddings:"/weddings",Timeline:"/timeline","Tasks & approvals":"/tasks",Vendors:"/vendors","Budget & payments":"/budget","Design studio":"/design","Countdown Studio":"/countdown",Documents:"/documents"};const route=routes[item.label];if(route){window.location.href=route;return;}setActiveNav(item.label);}}><Icon/><span>{item.label}</span>{item.count&&<span className="nav-count">{item.count}</span>}</button>})}</nav></div>
+      <div><div className="side-label">WORKSPACE</div><nav className="nav-group">{nav.map(item=>{const Icon=item.icon;return <button key={item.label} className={`nav-item ${activeNav===item.label?"active":""}`} onClick={()=>{const routes:Record<string,string>={Overview:"/",Weddings:"/weddings",Timeline:"/timeline","Tasks & approvals":"/tasks",Vendors:"/vendors","Budget & payments":"/budget","Design studio":"/design","Countdown Studio":"/countdown",Documents:"/documents","Reports & insights":"/reports"};const route=routes[item.label];if(route){window.location.href=route;return;}setActiveNav(item.label);}}><Icon/><span>{item.label}</span>{item.count&&<span className="nav-count">{item.count}</span>}</button>})}</nav></div>
       <div><div className="side-label">YOUR SPACE</div><nav className="nav-group"><button className="nav-item" onClick={()=>notify("Circle messaging is coming next")}><MessageCircle/><span>Team conversations</span></button><button className="nav-item" onClick={()=>notify("Settings will be available with workspace setup")}><Settings2/><span>Settings</span></button></nav></div>
       <div className="side-bottom"><div className="planner-card"><div className="planner-row"><div className="planner-avatar">AS</div><div><strong>Atelier Studio</strong><small>Professional plan</small></div></div><p>Your next celebration is 2 weeks away. Keep every detail in motion.</p><button className="plan-link" onClick={()=>notify("Workspace plan details")}>Manage workspace <ArrowRight size={12} style={{display:"inline",verticalAlign:"middle"}}/></button></div></div>
     </aside>
