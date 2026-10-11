@@ -1,11 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { ArrowRight, Heart, UsersRound, ShieldCheck } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 export default function OnboardingPage() {
-  const router = useRouter();
+  useEffect(() => {
+    const persona = localStorage.getItem("wedos-persona");
+    if (!persona) return;
+    fetch("/api/workspace", { cache: "no-store" })
+      .then(async response => response.ok ? response.json() : null)
+      .then(payload => {
+        if (!payload?.membership) return;
+        window.location.replace(persona === "couple" ? "/my-wedding" : "/weddings");
+      })
+      .catch(() => undefined);
+  }, []);
   return <main className="setup-shell">
     <header className="setup-topbar">
       <Link href="/login" className="setup-brand"><span className="setup-brand-mark">w.</span><span>wedos</span></Link>
