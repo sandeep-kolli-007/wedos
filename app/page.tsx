@@ -28,7 +28,7 @@ const nav = [
   { label: "Vendors", icon: Users },
   { label: "Budget & payments", icon: WalletCards },
   { label: "Design studio", icon: Sparkles },
-  { label: "Countdown Studio", icon: WandSparkles },
+  { label: "Countdown Studio", icon: Sparkles },
   { label: "Documents", icon: FileText },
 ];
 function BudgetChart() {
