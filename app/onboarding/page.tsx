@@ -6,13 +6,12 @@ import { ArrowRight, Heart, UsersRound, ShieldCheck } from "lucide-react";
 
 export default function OnboardingPage() {
   useEffect(() => {
-    const persona = localStorage.getItem("wedos-persona");
-    if (!persona) return;
     fetch("/api/workspace", { cache: "no-store" })
       .then(async response => response.ok ? response.json() : null)
       .then(payload => {
         if (!payload?.membership) return;
-        window.location.replace(persona === "couple" ? "/my-wedding" : "/weddings");
+        const kind = payload.membership.workspaces?.workspace_kind;
+        window.location.replace(kind === "couple" ? "/my-wedding" : "/weddings");
       })
       .catch(() => undefined);
   }, []);
