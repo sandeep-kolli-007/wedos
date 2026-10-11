@@ -30,6 +30,15 @@ export async function POST(request: Request) {
     const name = body.name.trim().slice(0, 80);
     const kind = "kind" in body && body.kind === "couple" ? "couple" : "planner";
     if (name.length < 2) return NextResponse.json({ error: "Workspace name must be at least 2 characters" }, { status: 400 });
+    const { data: existingMembership, error: existingError } = await supabase.from("workspace_members")
+      .select("workspace_id").eq("user_id", userId).limit(1).maybeSingle();
+    if (existingError) throw existingError;
+    if (existingMembership) {
+      const { error: kindError } = await supabase.from("workspaces")
+        .update({ workspace_kind: kind }).eq("id", existingMembership.workspace_id);
+      if (kindError) throw kindError;
+      return NextResponse.json({ workspace_id: existingMembership.workspace_id, workspace_kind: kind, existing: true });
+    }
     const slug = name.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 48) || "studio";
     const { data, error } = await supabase.rpc("create_workspace_for_current_user", { workspace_name: name, workspace_slug: slug });
     if (error) throw error;
