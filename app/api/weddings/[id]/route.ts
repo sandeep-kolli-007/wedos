@@ -47,7 +47,7 @@ export async function GET(_request: Request, context: RouteContext) {
 export async function POST(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
-    const auth = await authorizedWedding();
+    const auth = await authorizedWedding(id);
     if ("response" in auth) return auth.response;
     const { data: wedding, error: weddingError } = await auth.supabase.from("weddings")
       .select("id").eq("id", id).eq("workspace_id", auth.workspaceId).maybeSingle();
