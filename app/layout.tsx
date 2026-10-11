@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import MobileAppNavigation from "@/components/mobile-app-navigation";
+
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#ffffff" };
 
 export const metadata: Metadata = {
   title: "WedOS — Wedding Operations, Beautifully Connected",
