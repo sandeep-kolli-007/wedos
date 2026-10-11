@@ -16,7 +16,12 @@ export default function CoupleSetupPage() {
   useEffect(() => {
     fetch("/api/workspace", { cache: "no-store" })
       .then(async response => response.ok ? response.json() : null)
-      .then(payload => { if (payload?.membership) window.location.replace(payload.membership.workspaces?.workspace_kind === "couple" ? "/my-wedding" : "/weddings"); })
+      .then(async payload => {
+        if (!payload?.membership) return;
+        const response = await fetch("/api/weddings", { cache: "no-store" });
+        const weddings = response.ok ? await response.json() : null;
+        if (weddings?.weddings?.length) window.location.replace(payload.membership.workspaces?.workspace_kind === "couple" ? "/my-wedding" : "/weddings");
+      })
       .catch(() => undefined);
   }, []);
 
