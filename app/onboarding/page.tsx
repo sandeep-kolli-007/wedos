@@ -8,8 +8,11 @@ export default function OnboardingPage() {
   useEffect(() => {
     fetch("/api/workspace", { cache: "no-store" })
       .then(async response => response.ok ? response.json() : null)
-      .then(payload => {
+      .then(async payload => {
         if (!payload?.membership) return;
+        const weddingsResponse = await fetch("/api/weddings", { cache: "no-store" });
+        const weddingsPayload = weddingsResponse.ok ? await weddingsResponse.json() : null;
+        if (!weddingsPayload?.weddings?.length) return;
         const kind = payload.membership.workspaces?.workspace_kind;
         window.location.replace(kind === "couple" ? "/my-wedding" : "/weddings");
       })
