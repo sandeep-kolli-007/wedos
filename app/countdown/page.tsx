@@ -14,7 +14,7 @@ const designs = [
 ];
 
 export default function CountdownStudioPage(){
- const [design,setDesign]=useState(0),[tab,setTab]=useState("Templates"),[days,setDays]=useState("5"),[names,setNames]=useState("Radhika & Arjun"),[date,setDate]=useState("2026-11-15"),[message,setMessage]=useState("Our forever begins soon"),[photo,setPhoto]=useState(""),[video,setVideo]=useState(false),[exporting,setExporting]=useState(false),[exportFormat,setExportFormat]=useState("story"),[previewOpen,setPreviewOpen]=useState(false),[saved,setSaved]=useState(false);
+ const [design,setDesign]=useState(0),[tab,setTab]=useState("Templates"),[days,setDays]=useState("5"),[names,setNames]=useState("Radhika & Arjun"),[date,setDate]=useState("2026-11-15"),[message,setMessage]=useState("Our forever begins soon"),[photo,setPhoto]=useState(""),[video,setVideo]=useState(false),[exporting,setExporting]=useState(false),[exportFormat,setExportFormat]=useState<"story"|"square"|"whatsapp"|"reel">("story"),[previewOpen,setPreviewOpen]=useState(false),[saved,setSaved]=useState(false);
  const input=useRef<HTMLInputElement>(null);
  const d=designs[design];
  function exportSvg(){
