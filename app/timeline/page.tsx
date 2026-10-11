@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CalendarDays, Clock3, MapPin, Search } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock3, Search } from "lucide-react";
 
 type Wedding = { id: string; title: string; currency: string };
 type Event = { id: string; title: string; event_type?: string; starts_at?: string | null; venue_name?: string | null };
