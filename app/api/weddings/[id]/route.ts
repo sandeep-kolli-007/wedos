@@ -3,21 +3,25 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
-async function authorizedWedding() {
+async function authorizedWedding(weddingId: string) {
   const supabase = await createSupabaseServerClient();
   const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
   const userId = claimsData?.claims?.sub;
   if (claimsError || !userId) return { response: NextResponse.json({ error: "Sign in required" }, { status: 401 }) };
-  const { data: membership, error: membershipError } = await supabase.from("workspace_members").select("workspace_id").eq("user_id", userId).limit(1).maybeSingle();
+  const { data: memberships, error: membershipError } = await supabase.from("workspace_members").select("workspace_id").eq("user_id", userId);
   if (membershipError) throw membershipError;
-  if (!membership) return { response: NextResponse.json({ error: "Workspace not found" }, { status: 409 }) };
-  return { supabase, userId, workspaceId: membership.workspace_id };
+  const workspaceIds = (memberships ?? []).map((membership) => membership.workspace_id);
+  if (!workspaceIds.length) return { response: NextResponse.json({ error: "Workspace not found" }, { status: 409 }) };
+  const { data: wedding, error: weddingError } = await supabase.from("weddings").select("workspace_id").eq("id", weddingId).in("workspace_id", workspaceIds).maybeSingle();
+  if (weddingError) throw weddingError;
+  if (!wedding) return { response: NextResponse.json({ error: "Wedding not found" }, { status: 404 }) };
+  return { supabase, userId, workspaceId: wedding.workspace_id };
 }
 
 export async function GET(_request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
-    const auth = await authorizedWedding();
+    const auth = await authorizedWedding(id);
     if ("response" in auth) return auth.response;
     const { data, error } = await auth.supabase.from("weddings")
       .select("id,title,couple_names,status,start_date,end_date,venue_name,venue_city,guest_count,budget,currency,notes,created_at,updated_at")
