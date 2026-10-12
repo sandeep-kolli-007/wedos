@@ -45,11 +45,22 @@ export async function POST(request: Request) {
     const input = body as { title: string; description?: string; priority?: string; due_at?: string | null; wedding_id?: string | null };
     const priorities = ["low", "normal", "high", "urgent"];
     const priority = input.priority && priorities.includes(input.priority) ? input.priority : "normal";
+    const dueAt = input.due_at ? new Date(input.due_at) : null;
+    if (dueAt && Number.isNaN(dueAt.getTime())) {
+      return NextResponse.json({ error: "Choose a valid task due date" }, { status: 400 });
+    }
+    const weddingId = typeof input.wedding_id === "string" && input.wedding_id.trim() ? input.wedding_id.trim() : null;
+    if (weddingId) {
+      const { data: wedding, error: weddingError } = await supabase.from("weddings")
+        .select("id").eq("id", weddingId).eq("workspace_id", membership.workspace_id).maybeSingle();
+      if (weddingError) throw weddingError;
+      if (!wedding) return NextResponse.json({ error: "Wedding not found in this workspace" }, { status: 404 });
+    }
     const { data, error } = await supabase.from("tasks").insert({
       workspace_id: membership.workspace_id, created_by: userId,
       title: input.title.trim().slice(0, 180),
       description: typeof input.description === "string" ? input.description.slice(0, 4000) : null,
-      priority, due_at: input.due_at || null, wedding_id: input.wedding_id || null,
+      priority, due_at: dueAt?.toISOString() ?? null, wedding_id: weddingId,
     }).select("id,title,description,status,priority,due_at,completed_at,created_at,wedding_id").single();
     if (error) throw error;
     return NextResponse.json({ task: data }, { status: 201 });
