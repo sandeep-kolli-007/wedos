@@ -36,7 +36,7 @@ export default function WeddingsPage() {
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to load weddings"); }
     finally { setLoading(false); }
   }
-  useEffect(() => { void load(); }, []);
+  useEffect(() => { void load(); if (new URLSearchParams(window.location.search).get("create") === "1") setShowCreate(true); }, []);
 
   async function createWedding(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setBusy(true); setError("");
